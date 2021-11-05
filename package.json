@@ -6,6 +6,10 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
+    "migrations": "npx sequelize-cli db:migrate",
+    "undo:migrations": "npx sequelize-cli db:migrate:undo:all",
+    "seed": "npx sequelize-cli db:seed:all",
+    "undo:seed": "npx sequelize-cli db:seed:undo:all",
     "test": ""
   },
   "repository": {

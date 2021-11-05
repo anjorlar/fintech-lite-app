@@ -105,5 +105,6 @@ dist
 
 ## GENERAL FILES
 server/config/config.json
-samplefiles
+samplefiles/
 .DS_Store
+testmodels/

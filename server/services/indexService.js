@@ -1,9 +1,9 @@
 const User = require('../models').User;
-const Beneficiary = require('../models/beneficiary');
-const Profile = require('../models/profile');
-const Wallet = require('../models/wallet');
-const Walletpin = require('../models/walletpin');
-const Transactionlog = require('../models/transactionlog');
+const Beneficiary = require('../models').Beneficiary;
+const Profile = require('../models/profile').Profile;
+const Wallet = require('../models').Wallet;
+const Walletpin = require('../models').Walletpin;
+const Transactionlog = require('../models').Transactionlog;
 
 console.log('User >>>>>', User)
 class indexService {
@@ -18,8 +18,8 @@ class indexService {
         return User.create(obj)
     }
 
-    createUserWallet() {
-        return Wallet.create()
+    createUserWallet(id) {
+        return Wallet.create({ userId: id })
     }
 
 

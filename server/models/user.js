@@ -24,6 +24,8 @@
 //   return User;
 // };
 
+// const bcrypt = require('bcryptjs')
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
     name: {
@@ -62,5 +64,13 @@ module.exports = (sequelize, DataTypes) => {
       as: 'Wallets',
     });
   };
+  // Method 3 via the direct method
+  // User.beforeCreate(async (user, options) => {
+  //   console.log('user', user)
+  //   const salt = await bcrypt.genSalt(8);
+  //   const hashedPassword = await bcrypt.hash(user.password, salt);
+  //   console.log('user 22', user)
+  //   user.password = hashedPassword;
+  // });
   return User;
 };

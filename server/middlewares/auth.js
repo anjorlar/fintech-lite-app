@@ -1,5 +1,7 @@
-
-
+const jwt = require('jsonwebtoken');
+const { ReasonPhrases, StatusCodes, getReasonPhrase, getStatusCode } = require('http-status-codes');
+const httpResponse = require('../utils/response');
+const settings = require('../config/settings');
 
 /**
  * authToken
@@ -10,23 +12,44 @@
  * @returns {void|Object} object
  */
 const authToken = async (req, res, next) => {
-    const bearerToken = req.headers["authorization"];
-    if (!bearerToken) {
-        const errMessage = "Access denied. No token provided."
-        return httpResponse.errorResponse(res, errMessage, StatusCodes.UNAUTHORIZED)
-    }
-    const token = bearerToken.split(' ')[0];
-    //verify token
     try {
-        const decoded = utils.verifyToken(token)
+        let token =
+            req.headers.authorization === undefined ? "" : req.headers.authorization;
 
-        req.id = decoded.id;
-
-        next()
-    } catch (err) {
-        console.log('>>>>>>> err', err)
-        // const errMessage = "Invalid token. Please login"
-        return httpResponse.errorResponse(res, err.message, StatusCodes.UNAUTHORIZED)
+        if (token.includes("Bearer")) {
+            const checkBearer = req.headers.authorization.split(" ");
+            token = checkBearer[1];
+        } else {
+            token = req.headers.authorization;
+        }
+        if (!token)
+            return httpResponse.errorResponse(
+                res,
+                "Unauthorised access",
+                StatusCodes.UNAUTHORIZED
+            );
+        const authVerify = await jwt.verify(token, settings.jwt.SECRETKEY);
+        if (!authVerify)
+            return httpResponse.errorResponse(
+                res,
+                "Invalid request or token expire",
+                StatusCodes.UNAUTHORIZED
+            );
+        req.decodedUserData = authVerify
+        next();
+    } catch (error) {
+        if (error.message === "jwt expired")
+            return httpResponse.errorResponse(
+                res, "token expired", StatusCodes.UNAUTHORIZED
+            );
+        if (error.message)
+            return httpResponse.errorResponse(
+                res, error.message, StatusCodes.UNAUTHORIZED
+            );
+        if (error)
+            return httpResponse.errorResponse(
+                res, "Something went wrong with user login token", StatusCodes.BAD_REQUEST
+            );
     }
 };
 
