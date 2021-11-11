@@ -33,12 +33,14 @@ module.exports = (sequelize, DataTypes) => {
     transactionType: {
       type: DataTypes.STRING,
       // type: DataTypes.ENUM, ['debit','credit']
-      defaultValue: false,
     },
     fundedWith: {
       type: DataTypes.STRING,
       // type: DataTypes.ENUM,['card','transfer']
-      defaultValue: false,
+    },
+    transactionStatus: {
+      type: DataTypes.STRING,
+      // type: DataTypes.ENUM,['card','transfer']
     },
   });
   TransactionLog.associate = (models) => {

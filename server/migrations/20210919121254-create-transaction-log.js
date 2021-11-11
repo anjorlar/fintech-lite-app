@@ -17,6 +17,9 @@ module.exports = {
       fundedWith: {
         type: Sequelize.STRING
       },
+      transactionStatus: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

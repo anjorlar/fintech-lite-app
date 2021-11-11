@@ -22,10 +22,12 @@
 //   return WalletPin;
 // };
 
+const bcrypt = require('bcryptjs')
+
 module.exports = (sequelize, DataTypes) => {
   const WalletPin = sequelize.define('WalletPin', {
     pin: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
   });
@@ -35,5 +37,13 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'CASCADE',
     });
   };
+  // Method 3 via the direct method
+  // WalletPin.beforeCreate(async (userPin, options) => {
+  //   console.log('user', userPin)
+  //   const salt = await bcrypt.genSalt(8);
+  //   const hashedPin = await bcrypt.hash(userPin.pin, salt);
+  //   console.log('user 22', userPin)
+  //   userPin.pin = hashedPin;
+  // });
   return WalletPin;
 };

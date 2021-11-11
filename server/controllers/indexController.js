@@ -1,4 +1,3 @@
-const sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs')
 const { ReasonPhrases, StatusCodes, getReasonPhrase, getStatusCode } = require('http-status-codes');
@@ -7,7 +6,7 @@ const indexService = require('../services/indexService')
 const settings = require('../config/settings')
 
 
-class indexController {
+class IndexController {
     /**
      * @description A user signs up when the required data is passed in the body
      * @param {Object} req  req - Http Request object
@@ -82,6 +81,7 @@ class indexController {
                 return httpResponse.errorResponse(res, 'Please enter an email and password', StatusCodes.BAD_REQUEST)
             }
             const user = await indexService.getUser(email)
+            console.log("user user", user)
             if (!user) {
                 return httpResponse.errorResponse(res, 'Invalid Credentials', StatusCodes.BAD_REQUEST)
             }
@@ -93,8 +93,9 @@ class indexController {
                 return httpResponse.errorResponse(res, 'email or password is incorrect', StatusCodes.FORBIDDEN)
             }
             const payload = {
-                id: user.id,
-                email: email.toLowerCase()
+                id: user.dataValues.id,
+                email: email.toLowerCase(),
+                name: user.dataValues.name
             }
             const token = await jwt.sign(payload, settings.jwt.SECRETKEY, {
                 expiresIn: settings.jwt.expires,
@@ -115,4 +116,4 @@ class indexController {
     }
 }
 
-module.exports = new indexController()
+module.exports = new IndexController()
