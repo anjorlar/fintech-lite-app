@@ -54,12 +54,11 @@ const processCreditPayment = async (user, amount, fundType, paymentDetails) => {
                 const fundObj = {
                     email: user.email,
                     amount: amount.toString(),
-                    card: {
-                        cvv: paymentDetails.cvv.toString(),
-                        number: paymentDetails.cardNumber.toString(),
-                        expiry_month: paymentDetails.expiryMonth.toString(),
-                        expiry_year: paymentDetails.expiryYear.toString(),
-                    }
+                    bank: {
+                        code: paymentDetails.bankCode.toString(),
+                        account_number: paymentDetails.accountNumber.toString(),
+                    },
+                    birthday: paymentDetails.birthday.toString(),
                 }
                 const fund = await axios.post(settings.payStack.CHARGE, fundObj, {
                     headers: { Authorization: `Bearer ${settings.payStack.TOKEN}` }
@@ -72,7 +71,7 @@ const processCreditPayment = async (user, amount, fundType, paymentDetails) => {
             default: {
                 return {
                     data: `transaction type is not sent`,
-                    status: null
+                    status: false
                 }
             }
         }
@@ -100,7 +99,41 @@ const getTransactionLogs = (payStackData, user, wallet, type, amount) => {
         data: transactionPayload
     }
 }
+const sendOtp = async (otp, ref) => {
+    try {
+        const data = { otp, reference: ref };
+        const result = await axios.post(settings.payStack.SUBMIT_OTP, data, {
+            headers: { Authorization: `Bearer ${settings.payStack.TOKEN}` },
+        });
+        return {
+            status: result.data.data.status,
+            message: result.data.data.message,
+            data: result.data.data,
+        };
+    } catch (error) {
+        console.error(error.response.data || error.response);
+        return {
+            data: error.response.data.data,
+            message: error.response.data.message,
+            status: error.response.data.status,
+        };
+    }
+}
+
+const sendPin = (pin, ref) => {
+
+}
+
+
+const sendPhone = (phone, ref) => {
+
+}
+
+
+const sendBirthday = (birthday, ref) => {
+
+}
 
 module.exports = {
-    getTransactionLogs, createPaystackCustomer, processCreditPayment
+    getTransactionLogs, createPaystackCustomer, processCreditPayment, sendOtp
 }
